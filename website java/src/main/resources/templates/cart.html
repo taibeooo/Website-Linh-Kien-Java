@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .cart-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product img {
+            max-width: 80px;
+            margin-right: 10px;
+        }
+
+        .product-details {
+            flex-grow: 1;
+        }
+
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .checkout-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .back-to-home {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Shopping Cart</h1>
+    </header>
+
+    <div class="cart-container">
+
+
+        <!-- Lặp qua và hiển thị các mục trong giỏ hàng -->
+        <div class="cart-items">
+            <div class="cart-items">
+                <h2>Các mục trong giỏ hàng</h2>
+                <div th:each="item,index : ${product}">
+                    <div class="product">
+                        <input type="checkbox" th:id="'checkbox' + ${index.index}" th:name="'selectedProducts[' + ${index.index} + ']'" value="productId">
+                        <img th:src= "@{${item.getImgProduct()}}" alt="Hình ảnh sản phẩm">
+                        <div class="product-details" style="width: 200px;height: auto">
+                            <h3 th:text="${item.getNameProduct()}"></h3>
+                            <p th:text="'Giá: $' + ${item.getPriceProduct()}"></p>
+                        </div>
+                        <!-- Các chi tiết khác và nút xóa -->
+
+                        <div class="quantity">
+                            <button onclick="decrementValue(${index.index})">-</button>
+                            <input type="number" th:value="${quantity[index.index]}" id="quantity${index.index}">
+                            <button onclick="incrementValue(${index.index})">+</button>
+                        </div>
+
+
+                        <form th:action="@{/cart/{userid}/delete/{productId}(userid=${user}, productId=${item.getProductId()})}" method="POST">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button class="btn btn-outline-dark mt-auto" type="submit">Xóa khỏi giỏ hàng</button>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="total">
+                <p>Total: <span th:text="${total}"></span></p>
+                <a th:href="@{/cart/{userid}/checkout(userid=${user})}" onclick="showCheckoutSuccess()">
+                    <button class="checkout-btn">Checkout</button>
+                </a>
+                <p th:text="${paymentMessage}"></p> <!-- Hiển thị thông báo sau khi thanh toán -->
+            </div>
+
+            <script>
+                function showCheckoutSuccess() {
+                    alert("Đã thanh toán thành công!");
+                }
+            </script>
+
+
+
+            <a th:href="@{/homeuser/{userid} (userid=${user})}" class="back-to-home" >Back to Home</a>
+    </div>
+
+</body>
+</html>

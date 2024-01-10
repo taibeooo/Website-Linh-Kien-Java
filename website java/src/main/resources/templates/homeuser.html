@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Shop Homepage - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link  th:href="@{/css/styles.css}" rel="stylesheet" />
+        <style>
+            .no-underline {
+                text-decoration: none;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#!">Linh Kiện Điện Tử</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/homeuser/{userid} (userid = ${user})}">Trang chủ</a></li>
+                    </ul>
+                    <form class="d-flex" th:action="@{/cart/{userid} (userid = ${user})}">
+                        <button class="btn btn-outline-dark" type="submit" >
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+
+                        </button>
+                    </form>
+                    <div class="dropdown text-center">
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Xin chào <span th:text="${user}"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+        <!-- Header-->
+        <header class="bg-dark py-5" style="background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20200425/pngtree-blue-simulation-creative-integrated-circuit-background-image_334511.jpg'); background-size: cover;">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-black">
+                    <h1 class="display-4 fw-bolder" >Shop Linh Kiện Điện Tử</h1>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="filter-container">
+                <label for="category">Lọc sản phẩm:</label>
+                <form th:action="@{/homeuser/{userid}/filterByCategory (userid = ${user})}" method="GET">
+                    <select id="category" name="categoryID">
+                        <option value="">Category:</option>
+                        <option th:each="category : ${categories}" th:value="${category.categoryID}" th:text="${category.nameCategory}"></option>
+                    </select>
+                    <select id="company" name="companyID">
+                        <option value="">Company:</option>
+                        <option th:each="company : ${companies}" th:value="${company.companyID}" th:text="${company.nameCompany}"></option>
+                    </select>
+                    <select id="brand" name="brandID">
+                        <option value="">Brand:</option>
+                        <option th:each="brands : ${brand}" th:value="${brands.brandID}" th:text="${brands.nameBrand}"></option>
+                    </select>
+                    <select id="price" name="price">
+                        <option value="">Select price range</option>
+                        <option value="5000">5000</option>
+                        <option value="20000">20000</option>
+                        <option value="100000">100000</option>
+                        <option value="200000">200000</option>
+                    </select>
+                    <button type="submit">Lọc</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+<!--                    nội dung sản phẩm sẽ đc show tại đây-->
+
+                    <div class="col mb-5" th:each="product : ${products}">
+                        <div class="card h-100">
+                            <!-- Hiển thị hình ảnh sản phẩm -->
+                            <img class="card-img-top" th:src="${product.ImgProduct}" alt="Product Image"/>
+                            <!-- Hiển thị thông tin chi tiết sản phẩm -->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Liên kết đến trang chi tiết sản phẩm khi bấm vào tên sản phẩm -->
+<!--                                    <h5 class="fw-bolder">-->
+<!--                                        <a class="no-underline" th:href="@{'/product/' + ${product.productId}}" th:text="${product.NameProduct}"></a>-->
+<!--                                    </h5>-->
+                                    <h5 class="fw-bolder">
+                                        <a class="no-underline" th:href="@{/productdetail/{productid} (productid = ${product.getProductId()}) }" th:text="${product.NameProduct}"></a>
+                                    </h5>
+                                    <!-- Hiển thị giá sản phẩm -->
+                                    <span th:text="${product.PriceProduct}"></span>
+                                    <form th:action="@{/cart/{userid}/add/{productId} (userid = ${user}, productId = ${product.getProductId()})} " >
+                                        <div class="text-center">
+                                            <a class="btn btn-outline-dark mt-auto" th:href="@{/cart/{userid}/add/{productId} (userid = ${user}, productId = ${product.getProductId()})}" th:text="${'Thêm vào giỏ hàng'}"></a>
+                                        </div>
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script th:src="@{/js/scripts.js}"></script>
+
+    </body>
+
+</html>
